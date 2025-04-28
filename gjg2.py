@@ -1,3 +1,7 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 # 대화형 챗봇 애플리케이션에 필요한 라이브러리 임포트
 import streamlit as st  # type: ignore # 웹 페이지를 쉽게 만들 수 있는 라이브러리
 import json             # JSON 데이터 처리 라이브러리
@@ -23,7 +27,7 @@ st.set_page_config(
 # --------------------------------->
 # 데이터 로드 및 전처리
 # --------------------------------->
-df = pd.read_csv(r"C:\Users\itwill\Downloads\광진구_추천업소_전처리_위경도추가.csv")
+df = pd.read_csv("광진구_추천업소_전처리_위경도추가.csv")
 # 위도, 경도 결측치 제거
 df = df.dropna(subset=['latitude', 'longitude'])
 
@@ -33,7 +37,7 @@ df = df.dropna(subset=['latitude', 'longitude'])
 # ChromaDB 클라이언트 초기화 (캐싱 적용)
 @st.cache_resource
 def init_chroma_client():
-    return chromadb.PersistentClient(path="c:\\auto_excel\\chroma_db")
+    return chromadb.PersistentClient(path="chroma_db")
 
 # ChromaDB 클라이언트 가져오기 (캐싱 적용)
 @st.cache_resource
@@ -64,7 +68,7 @@ st.write("착한가격 업소 데이터에 대해 질문해보세요.")
 with st.sidebar:
     # 이미지 표시
     try:
-        image = Image.open(r"C:\Users\itwill\Downloads\sub0402_img01.png")
+        image = Image.open("sub0402_img01.png")
         st.image(image)
     except FileNotFoundError:
         st.warning("사이드바 이미지를 찾을 수 없습니다.")
