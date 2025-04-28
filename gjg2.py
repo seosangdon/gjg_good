@@ -46,6 +46,7 @@ def get_chroma_client():
 
 # 사용 가능한 컬렉션 이름 목록 가져오기
 def get_available_collections():
+    
     try:
         client = get_chroma_client()
         # 컬렉션 객체에서 이름만 추출하여 리스트로 반환
@@ -138,7 +139,22 @@ if not filters_applied:
 elif filtered_df.empty:
     st.warning("조건에 맞는 업소가 없습니다. 필터를 조정해주세요.")
 else:
+    # 업종별 색깔을 정의하는 딕셔녀리
+    category_colors ={
+        "일반음식점": "darkred",
+        "휴게음식점": "lightred",
+        "세탁업": "blue",
+        "목욕장업": "darkblue",
+        "숙박업": "cadetblue",
+        "미용업": "pink",
+        "이용업": "purple",
+        "안경업": "orange"        
+    }
+
     for idx, row in filtered_df.iterrows():
+        업종 = row['업종']
+        color = category_colors.get(업종, "blue")
+        
         html = f"""
         <b>업체명:</b> {row['사업장명']}<br>
         <b>업종:</b> {row['업종']}<br>
@@ -154,12 +170,12 @@ else:
             location=[row['latitude'], row['longitude']],
             popup=popup,
             tooltip=tooltip,
-            icon=folium.Icon(color="blue")
+            icon=folium.Icon(color=color)
         )
         marker.add_to(m)
 
 folium.LayerControl().add_to(m)
-st_folium(m, width=900, height=600)
+st_folium(m, width="100%", height=600)
 
 # 벡터 데이터베이스에서 컬렉션 가져오기
 def get_collection(collection_name):
@@ -304,15 +320,15 @@ def chat_response(question, collection):
 # 컬렉션 가져오기
 collection = get_collection(collection_name) # 백터 데이터베이스에서 컬렉션을 가져옴
 
- # 컬렉션 정보 표시
-if collection:
-    try:
-        count = collection.count()
-        st.sidebar.success(f"컬렉션 '{collection_name}'에서 {count}개의 문서를 불러왔습니다.")
-    except Exception as e:
-        st.sidebar.sidebar.warning(f"컬렉션 정보 확인 중 오류: {e}")
-else:
-    st.warning(f"컬렉션을 선택하거나 찾을 수 없습니다. 컬렉션 목록을 확인하세요.")
+#  # 컬렉션 정보 표시
+# if collection:
+#     try:
+#         count = collection.count()
+#         st.sidebar.success(f"컬렉션 '{collection_name}'에서 {count}개의 문서를 불러왔습니다.")
+#     except Exception as e:
+#         st.sidebar.sidebar.warning(f"컬렉션 정보 확인 중 오류: {e}")
+# else:
+#     st.warning(f"컬렉션을 선택하거나 찾을 수 없습니다. 컬렉션 목록을 확인하세요.")
 
 # --------------------------------->
 # 세션 상태 관리 및 대화 UI
