@@ -1,0 +1,13 @@
+streamlit
+pymongo
+sentence-transformers
+scikit-learn
+pandas
+tabulate
+beautifulsoup4
+requests
+chromadb
+openai
+folium
+streamlit_folium
+pysqlite3-binary
