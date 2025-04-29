@@ -80,6 +80,11 @@ with st.sidebar:
     # 사용 가능한 컬렉션을 불러오되, 'gjg_report'만 남기기
     all_cols = get_available_collections()
     allowed = [c for c in all_cols if c == "gjg_report"]
+
+    st.markdown("---")
+    st.subheader("사업장명 검색")
+    shop_search = st.text_input("찾고 싶은 사업장명을 입력하세요:")
+    search_button = st.button("검색")
     
     # 설정 섹션
     st.title("설정")
@@ -110,14 +115,24 @@ with st.sidebar:
 filtered_df = df.copy()
 filters_applied = False  # 필터가 적용되었는지 여부를 추적하는 변수
 
-if selected_category:
-    filtered_df = filtered_df[df['업종'].isin(selected_category)]
-    filters_applied = True
-
-if 상품권_선택 != '전체':
-    filtered_df = filtered_df[filtered_df['사랑상품권'] == 상품권_선택]
-    filters_applied = True
-
+is shop_search:
+    if selected_category:
+        filtered_df = filtered_df[df['업종'].isin(selected_category)]
+        filters_applied = True
+    
+    if 상품권_선택 != '전체':
+        filtered_df = filtered_df[filtered_df['사랑상품권'] == 상품권_선택]
+        filters_applied = True
+        
+# —— 지도 위에 테이블 표시 ——
+if shop_search:
+    st.markdown("### 업소 정보")
+    # 보여주고 싶은 컬럼만 선택
+    cols_to_show = ['사업장명', '업종', '사랑상품권', '도로명주소']
+    # 대화형 테이블 (스크롤·검색 가능)
+    st.dataframe(
+        filtered_df[cols_to_show].reset_index(drop=True), 
+        use_container_width=True)
 # --------------------------------->
 # 지도 시각화 UI
 # --------------------------------->
