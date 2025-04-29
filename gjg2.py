@@ -139,7 +139,6 @@ if shop_search:
 # --------------------------------->
 # 지도 시각화 UI
 # --------------------------------->
-st.markdown("### 추천업소 지도")
 center = [37.5502596, 127.073139]
 m = folium.Map(location=center, zoom_start=16)
 
