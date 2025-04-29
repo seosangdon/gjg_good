@@ -115,11 +115,15 @@ with st.sidebar:
 filtered_df = df.copy()
 filters_applied = False  # 필터가 적용되었는지 여부를 추적하는 변수
 
-is shop_search:
+if shop_search:
+    # 대소문자 구분 없이 포함 매칭
+    filtered_df = filtered_df[filtered_df['사업장명'].str.contains(shop_search, case=False, na=False)]
+    filters_applied = True
+else:
     if selected_category:
         filtered_df = filtered_df[df['업종'].isin(selected_category)]
         filters_applied = True
-    
+
     if 상품권_선택 != '전체':
         filtered_df = filtered_df[filtered_df['사랑상품권'] == 상품권_선택]
         filters_applied = True
