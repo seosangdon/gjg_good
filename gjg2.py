@@ -20,14 +20,13 @@ from folium import IFrame  # Folium에서 HTML 내용을 표시하기 위한 라
 # --------------------------------->
 st.set_page_config(
     page_title="광진구 착한가격 추천 챗봇",
-    page_icon="🕳️",
     layout="wide"
 )
 
 # --------------------------------->
 # 데이터 로드 및 전처리
 # --------------------------------->
-df = pd.read_csv("광진구_추천업소_전처리_위경도추가.csv")
+df = pd.read_csv("광진구_추천업소_최종데이터222.csv")
 # 위도, 경도 결측치 제거
 df = df.dropna(subset=['latitude', 'longitude'])
 
@@ -72,38 +71,23 @@ with st.sidebar:
         image = Image.open("sub0402_img01.png")
         st.image(image)
     except FileNotFoundError:
-        st.warning("사이드바 이미지를 찾을 수 없습니다.")
-   
+        st.warning("사이드바 이미지를 찾을 수 없습니다.")   
 
-    # 설정 섹션
+    # 컬렉션션 섹션
     collection_name = "gjg_report"
     # 사용 가능한 컬렉션을 불러오되, 'gjg_report'만 남기기
     all_cols = get_available_collections()
     allowed = [c for c in all_cols if c == "gjg_report"]
 
-    st.markdown("---")
-    st.subheader("사업장명 검색")
-    shop_search = st.text_input("찾고 싶은 사업장명을 입력하세요:")
-    search_button = st.button("검색")
-    
     # 설정 섹션
-    st.title("설정")
+    st.sidebar.markdown("---")    
     api_key = st.text_input("OpenAI API 키를 입력하세요", type="password")
 
-    # # 컬렉션 선택 드롭다운
-    # collection_list = get_available_collections()
-    # collection_name = None   
+    # 필터링 섹션
+    st.sidebar.markdown("---")
+    shop_search = st.text_input("🔍 사업장명 검색")      
 
-    # if allowed:
-    #     collection_name = st.selectbox(
-    #         "사용할 컬렉션 선택",
-    #         allowed,
-    #         index=0
-    #     )
-    # else:
-    #     st.warning("사용 가능한 컬렉션이 없습니다.")   
-
-    # 지도 필터링 UI
+    # 지도 필터링 UI   
     st.sidebar.subheader("지도 필터")
     selected_category = st.sidebar.multiselect("업종 선택", df['업종'].unique())
     상품권_선택 = st.sidebar.selectbox("서울사랑상품권 가맹", ['전체', '가능', '불가능'])
@@ -114,60 +98,96 @@ with st.sidebar:
 filtered_df = df.copy()
 filters_applied = False  # 필터가 적용되었는지 여부를 추적하는 변수
 
+# 검색 필터링
 if shop_search:
     # 대소문자 구분 없이 포함 매칭
     filtered_df = filtered_df[filtered_df['사업장명'].str.contains(shop_search, case=False, na=False)]
     filters_applied = True
-else:
-    if selected_category:
-        filtered_df = filtered_df[df['업종'].isin(selected_category)]
-        filters_applied = True
 
-    if 상품권_선택 != '전체':
-        filtered_df = filtered_df[filtered_df['사랑상품권'] == 상품권_선택]
-        filters_applied = True
-        
-# —— 지도 위에 테이블 표시 ——
-if shop_search:
-    st.markdown("### 업소 정보")
+# 카테고리 필터링
+if selected_category:
+    filtered_df = filtered_df[filtered_df['업종'].isin(selected_category)]
+    filters_applied = True
+
+# 상품권 필터링
+if 상품권_선택 != '전체':
+    filtered_df = filtered_df[filtered_df['사랑상품권'] == 상품권_선택]
+    filters_applied = True
+
+# 필터링된 결과가 있을 경우 테이블 표시
+if filters_applied and not filtered_df.empty:
+    st.markdown("### 필터링된 업소 정보")
     # 보여주고 싶은 컬럼만 선택
     cols_to_show = ['사업장명', '업종', '사랑상품권', '도로명주소']
     # 대화형 테이블 (스크롤·검색 가능)
     st.dataframe(
         filtered_df[cols_to_show].reset_index(drop=True), 
         use_container_width=True)
+elif filters_applied and filtered_df.empty:
+    # Streamlit에서 같은 메시지가 중복 출력되지 않도록 경고 메시지 조건을 분리
+    st.session_state['no_results_shown'] = st.session_state.get('no_results_shown', False)
+
+    if not st.session_state['no_results_shown']:
+        st.warning("조건에 맞는 업소가 없습니다. 필터를 조정해주세요.")
+        st.session_state['no_results_shown'] = True
+
 # --------------------------------->
 # 지도 시각화 UI
 # --------------------------------->
+# 지도 섹션 제목
+st.header("지도로 보기")
+
+# 필터링된 데이터 여부에 따른 설명
+if filters_applied:
+    if not filtered_df.empty:
+        st.success(f"총 {len(filtered_df)}개의 업소가 필터링되었습니다.")
+    else:
+        st.warning("조건에 맞는 업소가 없습니다. 필터를 조정해주세요.")
+else:
+    st.info("필터가 적용되지 않았습니다.")
+
+# 지도 중심점 설정
 center = [37.5502596, 127.073139]
-m = folium.Map(location=center, zoom_start=16)
+m = folium.Map(location=center, zoom_start=15)
 
-group_착한 = folium.FeatureGroup(name="착한업소").add_to(m)
-group_비착한 = folium.FeatureGroup(name="일반업소").add_to(m)
+# 업종별 색상 정의
+category_colors = {
+    "일반음식점": "darkred",
+    "휴게음식점": "lightred",
+    "세탁업": "blue",
+    "목욕장업": "darkblue",
+    "숙박업": "cadetblue",
+    "미용업": "pink",
+    "이용업": "purple",
+    "안경업": "orange"        
+}
 
-# 필터가 선택되지 않은 경우 광진구 마커만 표시
+# 범례 추가
+legend_html = '''
+<div style="position: fixed; 
+     bottom: 50px; right: 10px; width: 130px; height: 210px; 
+     border:2px solid grey; z-index:9999; font-size:14px;
+     background-color:white;
+     padding: 10px;
+     overflow-y: auto;
+     ">
+     <b>업종 범례</b><br>
+'''
+for category, color in category_colors.items():
+    legend_html += f'<i class="fa fa-circle" style="color:{color}"></i> {category}<br>'
+legend_html += '</div>'
+
+# 필터가 선택되지 않은 경우 광진구 중심 표시
 if not filters_applied:
     folium.Marker(
         location=center,
         popup="광진구 중심",
         tooltip="광진구",
-        icon=folium.Icon(color="red")
+        icon=folium.Icon(color="red", icon="glyphicon-map-marker")
     ).add_to(m)
-elif filtered_df.empty:
-    st.warning("조건에 맞는 업소가 없습니다. 필터를 조정해주세요.")
-else:
-    # 업종별 색깔을 정의하는 딕셔녀리
-    category_colors ={
-        "일반음식점": "darkred",
-        "휴게음식점": "lightred",
-        "세탁업": "blue",
-        "목욕장업": "darkblue",
-        "숙박업": "cadetblue",
-        "미용업": "pink",
-        "이용업": "purple",
-        "안경업": "orange"        
-    }
-
+    
+# 필터링된 결과가 있는 경우: 업소 마커 추가
+elif not filtered_df.empty:
     for idx, row in filtered_df.iterrows():
         업종 = row['업종']
         color = category_colors.get(업종, "blue")
@@ -175,6 +195,8 @@ else:
         html = f"""
         <b>업체명:</b> {row['사업장명']}<br>
         <b>업종:</b> {row['업종']}<br>
+        <b>유형:</b> {row['업태구분명']}<br>
+        <b>평균가격:</b> {row['가격']}<br>
         <b>착한업소:</b> {row['착한업소']}<br>
         <b>상품권 가맹:</b> {row['사랑상품권']}<br>
         <b>위생등급:</b> {row['위생등급'] if pd.notna(row['위생등급']) else '미지정'}<br>
@@ -187,12 +209,28 @@ else:
             location=[row['latitude'], row['longitude']],
             popup=popup,
             tooltip=tooltip,
-            icon=folium.Icon(color=color)
+            icon=folium.Icon(color=color, icon="glyphicon-search")
         )
         marker.add_to(m)
+    
+    # 필터링된 결과가 있으면 마커 범위로 지도 조정
+    if len(filtered_df) > 0:
+        bounds = [
+            [filtered_df['latitude'].min(), filtered_df['longitude'].min()],
+            [filtered_df['latitude'].max(), filtered_df['longitude'].max()]
+        ]
+        m.fit_bounds(bounds)
 
+# 지도에 범례 추가
+m.get_root().html.add_child(folium.Element(legend_html))
+
+# 지도 컨트롤 추가
 folium.LayerControl().add_to(m)
+
+# 지도 표시
 st_folium(m, width="100%", height=600)
+
+
 
 # 벡터 데이터베이스에서 컬렉션 가져오기
 def get_collection(collection_name):
@@ -264,23 +302,44 @@ def get_gpt_response(query, search_results, api_key, model="gpt-4o-mini"):
                 content = content[:8000] + "..."
             context += f"설명: {content}\n\n"
 
-        system_prompt = """당신은 착한가격업소(가성비 좋은 업소) 발굴 및 분석 전문가입니다. 제공된 문서들을 바탕으로 사용자 질문에
-        정확하고 간결하게 답변해주세요.
+        system_prompt = """
+        당신은 착한가격 업소 발굴을 위한 데이터 분석 전문가입니다. 
+        당신의 임무는 서울특별시 광진구 내 착한가격 업소를 신규 발굴하는 데 필요한 데이터 분석을 지원하는 것입니다.
 
-        답변 작성 가이드라인:
-        1. 사용자의 질문에 직접적으로 관련된 내용만 답변하세요.
-        2. 질문과 관련 없는 부가정보나 제안사항은 포함하지 마세요.
-        3. 제공된 문서에서 확인할 수 있는 사실에 기반하여 답변하세요.
-        4. 답변은 간결하고 명확하게 작성하세요.
-        5. 사용자가 광진구나 특정 지역에 대해 질문하면, 해당 지역의 착한가격업소 정보에 집중하여 답변하세요.
+
+        다음 기준을 고려하여 분석 및 추천을 수행하세요:
+        1. 착한가격 업소 선정 기준:
+        - 해당 업종 평균 대비 저렴한 가격
+        - 위생 상태 및 청결 기준 충족
+        - 친절한 서비스 제공
+        - 지역 화폐 가맹점 여부, 지역 공헌 활동 참여
+        - 가격 동결·인하 등 물가 안정 기여 노력
+        - 종합 평가 점수 기준(예: 총점 40점 이상)
+
+        2. 착한가격 업소의 주요 업종:
+        - 일반음식점 (한식, 중식, 일식, 양식, 분식 등)
+        - 미용업
+        - 세탁업
+        - 기타 생활 밀착 서비스
+
+        3. 광진구 정책 방향:
+        - 물가 안정 및 소상공인 지원
+        - 지역민 실질적 혜택 제공
+        - SNS/홈페이지 홍보 강화
+        - 소비자 후기, 만족도 반영
+
+        위 기준을 바탕으로 광진구 내 착한가격 업소로 지정될 가능성이 높은 후보 업소를 발굴하고, 해당 후보의 강점과 선정 가능 사유를 데이터 기반으로 분석하세요.
+
+        답변은 명확하고 근거 있는 정보 중심으로 작성해야 하며, 불필요한 배경 설명은 생략하세요.
         """
 
         user_prompt = f"""{context}
 
         사용자 질문: {query}
 
-        위 문서들을 분석하여 사용자의 질문에만 직접적으로 답변해주세요.
-        질문에 관련된 정보만 제공하고, 불필요한 배경설명이나 추가 정보는 생략해주세요.
+        위 문서 및 데이터 기반으로 착한가격 업소 신규 후보를 발굴할 수 있도록 분석을 수행하고, 
+        선정 근거를 제시해주세요. 분석 기준은 광진구 조례 및 행정안전부 기준을 기반으로 하며, 
+        관련된 업종·가격·위생·서비스·공공성 요소를 포함해야 합니다.
         """
 
         response = client.chat.completions.create(
@@ -415,3 +474,4 @@ for question in example_questions:
 if st.sidebar.button("대화 기록 초기화"):
     st.session_state.chat_history = []
     st.rerun()
+
