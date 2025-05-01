@@ -162,21 +162,6 @@ category_colors = {
     "안경업": "orange"        
 }
 
-# 범례 추가
-legend_html = '''
-<div style="position: fixed; 
-     bottom: 50px; right: 10px; width: 130px; height: 210px; 
-     border:2px solid grey; z-index:9999; font-size:14px;
-     background-color:white;
-     padding: 10px;
-     overflow-y: auto;
-     ">
-     <b>업종 범례</b><br>
-'''
-for category, color in category_colors.items():
-    legend_html += f'<i class="fa fa-circle" style="color:{color}"></i> {category}<br>'
-legend_html += '</div>'
-
 # 필터가 선택되지 않은 경우 광진구 중심 표시
 if not filters_applied:
     folium.Marker(
@@ -220,9 +205,6 @@ elif not filtered_df.empty:
             [filtered_df['latitude'].max(), filtered_df['longitude'].max()]
         ]
         m.fit_bounds(bounds)
-
-# 지도에 범례 추가
-m.get_root().html.add_child(folium.Element(legend_html))
 
 # 지도 컨트롤 추가
 folium.LayerControl().add_to(m)
