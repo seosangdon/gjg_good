@@ -15,6 +15,7 @@ import pandas as pd      # 데이터 분석 라이브러리
 from streamlit_folium import st_folium # Streamlit에서 Folium 지도를 사용하기 위한 라이브러리
 from folium import IFrame  # Folium에서 HTML 내용을 표시하기 위한 라이브러리
 
+
 # --------------------------------->
 # 페이지 설정
 # --------------------------------->
@@ -162,6 +163,7 @@ category_colors = {
     "안경업": "orange"        
 }
 
+
 # 필터가 선택되지 않은 경우 광진구 중심 표시
 if not filters_applied:
     folium.Marker(
@@ -178,16 +180,19 @@ elif not filtered_df.empty:
         color = category_colors.get(업종, "blue")
         
         html = f"""
-        <b>업체명:</b> {row['사업장명']}<br>
-        <b>업종:</b> {row['업종']}<br>
-        <b>유형:</b> {row['업태구분명']}<br>
-        <b>평균가격:</b> {row['가격']}<br>
-        <b>착한업소:</b> {row['착한업소']}<br>
-        <b>상품권 가맹:</b> {row['사랑상품권']}<br>
-        <b>위생등급:</b> {row['위생등급'] if pd.notna(row['위생등급']) else '미지정'}<br>
-        <b>행정처분:</b> {row['행정처분'] if pd.notna(row['행정처분']) else '없음'}
-        """
-        iframe = IFrame(html, width=300, height=200)
+<div style="font-family: 'Arial'; border-radius: 8px; padding: 10px; background-color: #f9f9f9;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: flex-start;">
+    <h4 style="margin: 0 auto 8px auto; color: #2c3e50; text-align: center;">{row['사업장명']}</h4>
+    <p style="margin: 3px 0;"><b>업종:</b> {row['업종']}</p>
+    <p style="margin: 3px 0;"><b>유형:</b> {row['업태구분명']}</p>
+    <p style="margin: 3px 0;"><b>평균가격:</b> {row['가격']}</p>
+    <p style="margin: 3px 0;"><b>상품권 가맹:</b> {row['사랑상품권']}</p>
+    <p style="margin: 3px 0;"><b>위생등급:</b> {row['위생등급'] if pd.notna(row['위생등급']) else '미지정'}</p>
+    <p style="margin: 3px 0;"><b>행정처분:</b> {row['행정처분'] if pd.notna(row['행정처분']) else '없음'}</p>
+</div>
+
+"""
+        iframe = IFrame(html, width=300, height=240)
         popup = folium.Popup(iframe, max_width=300)
         tooltip = row['사업장명']
         marker = folium.Marker(
@@ -205,6 +210,7 @@ elif not filtered_df.empty:
             [filtered_df['latitude'].max(), filtered_df['longitude'].max()]
         ]
         m.fit_bounds(bounds)
+
 
 # 지도 컨트롤 추가
 folium.LayerControl().add_to(m)
