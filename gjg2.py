@@ -153,14 +153,22 @@ m = folium.Map(location=center, zoom_start=15)
 
 # 업종별 색상 정의
 category_colors = {
-    "일반음식점": "darkred",
-    "휴게음식점": "lightred",
-    "세탁업": "blue",
-    "목욕장업": "darkblue",
-    "숙박업": "cadetblue",
-    "미용업": "pink",
-    "이용업": "purple",
-    "안경업": "orange"        
+    "한식": "darkred",        # 깊고 전통적인 느낌
+    "분식": "lightred",         # 밝고 활기찬 느낌
+    "일식": "blue",          # 차분하고 정갈한 느낌
+    "중국식": "darkblue",         # 화려하고 풍성한 느낌
+    "까페": "teal",          # 세련되고 편안한 느낌
+    "식육(숯불구이)": "firebrick", # 강렬하고 먹음직스러운 느낌
+    "김밥(도시락)": "mediumpurple", # 산뜻하고 깔끔한 느낌
+    "통닭(치킨)": "goldenrod",   # 고소하고 따뜻한 느낌
+    "경양식": "sandybrown",    # 부드럽고 향수를 불러일으키는 느낌
+    "기타": "gray",           # 무난하고 포괄적인 느낌
+    "외국음식전문점(인도,태국등등)": "olive", # 이국적이고 다채로운 느낌
+    "횟집": "skyblue",        # 시원하고 신선한 느낌
+    "라이브카페": "darkviolet",  # 분위기 있고 개성 있는 느낌
+    "커피숍": "chocolate",      # 따뜻하고 부드러운 느낌
+    "편의점점": "forestgreen",   # 친근하고 활기찬 느낌
+    "기타 휴게음식점점": "dimgray", # 차분하고 보조적인 느낌
 }
 
 
@@ -184,7 +192,6 @@ elif not filtered_df.empty:
             box-shadow: 2px 2px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: flex-start;">
     <h4 style="margin: 0 auto 8px auto; color: #2c3e50; text-align: center;">{row['사업장명']}</h4>
     <p style="margin: 3px 0;"><b>업종:</b> {row['업종']}</p>
-    <p style="margin: 3px 0;"><b>유형:</b> {row['업태구분명']}</p>
     <p style="margin: 3px 0;"><b>평균가격:</b> {row['가격']}</p>
     <p style="margin: 3px 0;"><b>상품권 가맹:</b> {row['사랑상품권']}</p>
     <p style="margin: 3px 0;"><b>위생등급:</b> {row['위생등급'] if pd.notna(row['위생등급']) else '미지정'}</p>
