@@ -81,7 +81,8 @@ with st.sidebar:
     # 설정 섹션   
     # api_key = st.text_input("OpenAI API 키를 입력하세요", type="password")
     api_key = st.secrets["OPENAI_API_KEY"]
-    
+
+    st.sidebar.markdown("---") 
     # 필터링 섹션
     shop_search = st.text_input("🔍 사업장명 검색")      
 
