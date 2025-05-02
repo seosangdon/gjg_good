@@ -60,6 +60,8 @@ def get_available_collections():
 # 메인 화면 UI
 # --------------------------------->
 st.title("광진구 착한가격업소 발굴 인공지능 플랫폼")
+st.write("착한가격 업소 데이터에 대해 질문해보세요.")
+
 
 # --------------------------------->
 # 사이드바 설정 UI
@@ -78,11 +80,11 @@ with st.sidebar:
     all_cols = get_available_collections()
     allowed = [c for c in all_cols if c == "gjg_report"]
 
-    # 설정 섹션   
+    # 설정 섹션
+    st.sidebar.markdown("---")    
     # api_key = st.text_input("OpenAI API 키를 입력하세요", type="password")
     api_key = st.secrets["OPENAI_API_KEY"]
 
-    st.sidebar.markdown("---") 
     # 필터링 섹션
     shop_search = st.text_input("🔍 사업장명 검색")      
 
@@ -134,6 +136,8 @@ elif filters_applied and filtered_df.empty:
 # 지도 시각화 UI
 # --------------------------------->
 # 지도 섹션 제목
+st.header("지도로 보기")
+
 # 필터링된 데이터 여부에 따른 설명
 if filters_applied:
     if not filtered_df.empty:
@@ -307,7 +311,6 @@ def get_gpt_response(query, search_results, api_key, model="gpt-4o-mini"):
         - 필수 결격 사유(가격 초과, 행정처분, 세금 체납 등)가 있을 경우, 점수와 관계없이 "지정 불가"로 표시하세요.
         - 각 항목별 점수와 총점을 명시하고, 지정 가능 여부 및 간단한 사유를 함께 출력하세요.
 
-
         [분석 기준]
         1. 해당 업종 평균 대비 저렴한 가격
         2. 위생 상태 및 청결 기준 충족
@@ -392,7 +395,7 @@ def get_gpt_response(query, search_results, api_key, model="gpt-4o-mini"):
         사용자 질문: {query}
 
         위 문서들을 바탕으로 사용자 질문에만 정확히 답변해주세요.
-        광진구 착한가격업소 지정 기준인 가격, 위생, 서비스, 공공성 등 주요 분석 기준을 포함하여 분석하고, 신규 후보 업소를 발굴해주세요.
+                광진구 착한가격업소 지정 기준인 가격, 위생, 서비스, 공공성 등 주요 분석 기준을 포함하여 분석하고, 신규 후보 업소를 발굴해주세요.
         각 업소의 업종이 요식업인지 비요식업인지에 따라 아래 평가표 기준에 따라 점수를 계산하고, 총점이 40점 이상이면 "지정 가능", 미만이면 "지정 불가"로 분류하세요.
         프렌차이즈 업소는 기준에 부적합하므로 평가에서 제외 해주세요.
         제공된 광진구 업소 목록을 정리해주세요. 
@@ -402,8 +405,10 @@ def get_gpt_response(query, search_results, api_key, model="gpt-4o-mini"):
         - 필수 결격 사유(가격 초과, 행정처분, 세금 체납 등)가 있을 경우, 점수와 관계없이 "지정 불가"로 표시하세요.
         - 각 항목별 점수와 총점을 명시하고, 지정 가능 여부 및 간단한 사유를 함께 출력하세요.
         - 마지막란에 리뷰도 불러와주세요
-
+        - 주소도 불러와주세요
+        
         """
+
 
         response = client.chat.completions.create(
             model=model,
@@ -507,11 +512,11 @@ if prompt := st.chat_input("질문을 입력하세요 (예: 광진구에서 착�
 st.sidebar.markdown("---")
 st.sidebar.header("예시 질문")
 example_questions = [
-    "최근 리뷰가 좋은 업소들을 추천해줘",
-    "혼밥하기 좋은 업소들을 추천해줘",
-    "유심 빵집 어때?",
-    "유심빵집 추천해준 이유가 뭐야?",
-    "유심빵집 지역사회에 어떤 기여를 하고 있어?"
+    "최근 리뷰가 좋은 업소들을 추천해줘.",
+    "혼밥하기 좋은 식당 추천해줘",
+    "친절 이라는 단어가 많이 언급된 업소는 어디야?",
+    "맛있다고 평가하는 업소는 어디야",
+    
 ]
 
 # 예시 질문 버튼
