@@ -20,7 +20,7 @@ from folium import IFrame  # Folium에서 HTML 내용을 표시하기 위한 라
 # 페이지 설정
 # --------------------------------->
 st.set_page_config(
-    page_title="광진구 착한가격 추천 챗봇",
+    page_title="광진구 착한가격업소 발굴 인공지능 플랫폼",
     layout="wide"
 )
 
@@ -59,7 +59,7 @@ def get_available_collections():
 # --------------------------------->
 # 메인 화면 UI
 # --------------------------------->
-st.title("광진구 착한가격 업소 챗봇")
+st.title("광진구 착한가격업소 발굴 인공지능 플랫폼")
 st.write("착한가격 업소 데이터에 대해 질문해보세요.")
 
 
