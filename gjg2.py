@@ -433,6 +433,7 @@ st.sidebar.markdown("---")
 st.sidebar.header("예시 질문")
 example_questions = [
     "광진구에서 착한가격업소는 어떤 기준으로 선정되나요?",
+    "유심빵집에 대해 알려줘"
     "착한가격업소로 등록되면 어떤 혜택이 있나요?"
 ]
 
