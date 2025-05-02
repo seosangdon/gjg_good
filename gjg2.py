@@ -60,8 +60,6 @@ def get_available_collections():
 # 메인 화면 UI
 # --------------------------------->
 st.title("광진구 착한가격업소 발굴 인공지능 플랫폼")
-st.write("착한가격 업소 데이터에 대해 질문해보세요.")
-
 
 # --------------------------------->
 # 사이드바 설정 UI
@@ -136,8 +134,6 @@ elif filters_applied and filtered_df.empty:
 # 지도 시각화 UI
 # --------------------------------->
 # 지도 섹션 제목
-st.header("지도로 보기")
-
 # 필터링된 데이터 여부에 따른 설명
 if filters_applied:
     if not filtered_df.empty:
