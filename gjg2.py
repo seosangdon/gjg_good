@@ -27,7 +27,7 @@ st.set_page_config(
 # --------------------------------->
 # 데이터 로드 및 전처리
 # --------------------------------->
-df = pd.read_csv("광진구_추천업소_최종데이터222.csv")
+df = pd.read_csv("광진구_추천업소_최종데이터333.csv")
 # 위도, 경도 결측치 제거
 df = df.dropna(subset=['latitude', 'longitude'])
 
@@ -37,7 +37,7 @@ df = df.dropna(subset=['latitude', 'longitude'])
 # ChromaDB 클라이언트 초기화 (캐싱 적용)
 @st.cache_resource
 def init_chroma_client():
-    return chromadb.PersistentClient(path="chroma_db")
+    return chromadb.PersistentClient(path="chroma_db3")
 
 # ChromaDB 클라이언트 가져오기 (캐싱 적용)
 @st.cache_resource
