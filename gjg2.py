@@ -20,7 +20,7 @@ from folium import IFrame  # Folium에서 HTML 내용을 표시하기 위한 라
 # 페이지 설정
 # --------------------------------->
 st.set_page_config(
-    page_title="가치삽시다 !광진구 AI 기반 착한가격업소 발굴 플랫폼",
+    page_title="광진구 착한가격업소 발굴 인공지능 플랫폼",
     layout="wide"
 )
 
