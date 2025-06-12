@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+/* 전체 배경 및 폰트 설정 */
+.stApp {
+    background: linear-gradient(135deg, #1a1a3a 0%, #0f0c29 100%);
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
+/* 기본 컨테이너 (너비 조정) */
+.main-container {
+    max-width: 1100px; /* 너비 축소 */
+    margin: 0 auto;
+    padding: 1.5rem; /* 패딩 약간 축소 */
+}
+
+/* 타이틀 스타일 (폰트 크기 조정) */
+.main-title {
+    text-align: center; font-size: 3.2rem; font-weight: 800; /* 폰트 크기 축소 */
+    margin-bottom: 0.5rem; letter-spacing: -2px;
+    background: linear-gradient(90deg, #89f7fe, #66a6ff, #a1c4fd);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 5px rgba(174, 214, 241, 0.5), 0 0 15px rgba(137, 247, 254, 0.5), 0 0 30px rgba(102, 166, 255, 0.4);
+}
+.sub-title {
+    text-align: center; font-size: 1.2rem; margin-bottom: 2.5rem; font-weight: 400; /* 폰트/마진 축소 */
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* 카드 공통 스타일 (리퀴드 글래스) (패딩, 그림자 조정) */
+.liquid-card {
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.3), transparent 40%),
+                linear-gradient(to right bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px; /* 테두리 반경 축소 */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    padding: 1.8rem; /* 패딩 축소 */
+    margin: 1rem 0;
+}
+.liquid-card:hover {
+    transform: translateY(-8px) scale(1.01); /* 호버 효과 미세 조정 */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 현재 날씨 카드 (크기 및 폰트 조정) */
+.current-weather {
+    min-height: 350px; /* 최소 높이 축소 */
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center; position: relative;
+}
+.current-weather-icon { width: 110px; height: 110px; margin-bottom: 0.8rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); } /* 아이콘 크기 축소 */
+.current-temp { font-size: 4.5rem; font-weight: 800; color: white; text-shadow: 0 0 20px rgba(0,0,0,0.5); line-height: 1; } /* 폰트 크기 축소 */
+.current-condition { font-size: 1.6rem; color: rgba(255,255,255,0.95); font-weight: 700; margin-top: 0.8rem; } /* 폰트 크기 축소 */
+.current-time { font-size: 0.9rem; color: rgba(255,255,255,0.8); position: absolute; top: 20px; right: 25px; } /* 폰트 크기 축소 */
+
+/* 상세 정보 (간격 및 폰트 조정) */
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem; margin-top: 1.5rem; } /* 간격, 마진 축소 */
+.detail-item, .forecast-card {
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.2), transparent 50%),
+                linear-gradient(to right bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: 25px; /* 테두리 반경 축소 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    padding: 1.2rem; /* 패딩 축소 */
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.detail-item:hover, .forecast-card:hover { transform: translateY(-6px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.3); } /* 호버 효과 조정 */
+.forecast-card { padding: 1.2rem 0.8rem; height: 100%; } /* 패딩 축소 */
+.detail-icon { font-size: 2.2rem; margin-bottom: 0.4rem; } /* 아이콘 크기/마진 축소 */
+.detail-label { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.4rem; } /* 폰트 크기/마진 축소 */
+.detail-value { color: white; font-size: 1.4rem; font-weight: 700; } /* 폰트 크기 축소 */
+
+/* 시간별 예보 (크기 및 폰트 조정) */
+.forecast-time { color: rgba(255,255,255,0.9); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; } /* 폰트 크기/마진 축소 */
+.forecast-icon { width: 45px; height: 45px; margin: 0.4rem 0; } /* 아이콘 크기/마진 축소 */
+.forecast-temp { color: white; font-size: 1.4rem; font-weight: 700; } /* 폰트 크기 축소 */
+.forecast-condition { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 0.4rem; } /* 폰트 크기/마진 축소 */
+
+/* [수정됨] 모기 지수 카드 스타일 (4단계) */
+.mosquito-card {
+    padding: 1.8rem 2rem;
+    text-align: center;
+    min-height: 350px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+/* 1단계: 쾌적 */
+.mosquito-good { border-color: #66a6ff; } 
+/* 2단계: 관심 */
+.mosquito-watch { border-color: #fdd835; } 
+/* 3단계: 주의 (새로 추가) */
+.mosquito-caution { border-color: #fb8c00; }
+/* 4단계: 불쾌 */
+.mosquito-bad { border-color: #d81b60; }
+
+.mosquito-title {
+    font-size: 1.2rem; font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.8rem;
+}
+.mosquito-value {
+    font-size: 2.5rem; font-weight: 800;
+    color: white; line-height: 1.2;
+}
+.mosquito-desc {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 0.8rem;
+}
+.detail-icon-svg, .mosquito-title-icon-svg {
+    width: 2.2rem;
+    height: 2.2rem;
+    filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)); /* 흰색으로 만들고 그림자 효과 */
+    margin-bottom: 0.4rem;
+}
+.mosquito-title-icon-svg {
+    width: 1.5rem; /* 타이틀 옆 아이콘은 약간 작게 */
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    vertical-align: -0.25rem; /* 텍스트와 세로 정렬 */
+    }
+.mosquito-level-icon-svg {
+width: 2.3rem; /* 단계 텍스트와 어울리는 크기 */
+    height: 2.3rem;
+    filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)); /* 흰색 아이콘, 그림자 효과 */
+    margin-left: 0.5rem;
+    vertical-align: -0.5rem; /* 큰 텍스트 옆에서 세로 중앙 정렬 */
+    }
+
+/* 에러 메시지 */
+.error-message {
+    background: rgba(255, 87, 87, 0.2); border-radius: 20px; padding: 1rem; color: white;
+    text-align: center; margin: 1rem 0; border: 1px solid rgba(255, 87, 87, 0.3);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+/* Streamlit 기본 요소 숨기기 */
+.stDeployButton, footer, .stApp > header { visibility: hidden; }
